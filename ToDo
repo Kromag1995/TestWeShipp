@@ -1,11 +1,12 @@
 Crear componente de la celula
-    * Tiene que tener metodo OnClick para cambiar de estado de viva a muerta o viceversa
-    * Si esta viva debe tener color, sino debe ser blanca
+    - Tiene que tener metodo OnClick para cambiar de estado de viva a muerta o viceversa
+    - Si esta viva debe tener color, sino debe ser blanca
 Crear conotenedor de las celulas
     * Aca se va almacenar la logica para ver cuales sobrevivien y cuales mueren
         * Si una celula muerta esta en contacto con 3 vivas, nace.
         * Si una celula viva esta en contacto con 2 o 3 vivas, sigue viva.
         * Si una celula viva esta en contacto con menos de 2 vivas o mas de 3, muere.
+        * Se ejecuta cada 300 ms
     * La red de celulas tiene condicioens de contorno periodicas, entonces las celulas de la ultima columna 
     esta en contacto con las celulas de la primera columna. De misma forma para las filas
     * Crear botones para iniciar, detener y reiniciar

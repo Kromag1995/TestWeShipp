@@ -5,7 +5,14 @@
 .Cell {
   height: 25px;
   width: 25px;
-  background-color: #bbb;
   border-radius: 50%;
   display: inline-block;
+}
+
+.false {
+  background-color: rgb(158, 0, 0);
+}
+
+.true {
+  background-color:white;
 }
