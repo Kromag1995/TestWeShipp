@@ -1,11 +1,11 @@
 import React from 'react';
-import Cell from './components/Cell'
 
 import './App.css';
+import CellContainer from './components/CellContainer';
 
-function generateMatrix(i,j){
-  return Array(j).fill().map(()=>{
-    return Array(i).fill().map(()=>{
+function generateMatrix(width,heigth){
+  return Array(heigth).fill().map(()=>{
+    return Array(width).fill().map(()=>{
       return false
     })
   })
@@ -15,9 +15,9 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      heigth: 50,
+      heigth: 60,
       width: 30,
-      board: generateMatrix(30,50),
+      board: generateMatrix(30,60),
       generation:0,
       run:false,
     };
@@ -25,8 +25,8 @@ class App extends React.Component {
     this.stopRun = this.stopRun.bind(this)
     this.restartRun = this.restartRun.bind(this)
     this.turn = this.turn.bind(this)
+    this.killorRevive = this.killorRevive.bind(this)
   }
-
   killorRevive(i,j){
     const newBoard = this.state.board.map((arr)=> {return arr.slice()})
     newBoard[j][i] = !newBoard[j][i]
@@ -34,28 +34,6 @@ class App extends React.Component {
       board : newBoard.map((arr)=> {return arr.slice()})
     })
   }
-  renderBoard(){
-    var board = Array(this.state.heigth).fill().map((u,j) => { return this.renderRow(j) })
-    return (
-      <div className="Board">
-        {board}
-      </div>
-    )
-  }
-  renderRow(j){
-    var row = Array(this.state.width).fill().map((u,i) => { return this.renderCell(i,j) })
-    return (
-      <div className="row" key={j.toString()}>
-        {row}
-      </div>
-    )
-  }
-  renderCell(i,j) {
-    return(
-        <Cell onClick={this.killorRevive.bind(this,i,j)} key={i.toString()} alive={this.state.board[j][i]} />
-    )
-  }
-
   startRun(){
     // start/resume simulation
     this.setState({
@@ -92,7 +70,6 @@ class App extends React.Component {
       }
     },300)
   }
-
   turn(){
     const newBoard = this.state.board.map((arr)=> {return arr.slice()})
     var neighborhood =  Array(0)
@@ -146,9 +123,7 @@ class App extends React.Component {
           Generación {this.state.generation}
         </div>
       </div>
-      <div className="container">
-        {this.renderBoard()}
-      </div>
+      <CellContainer board={this.state.board} killorRevive={this.killorRevive} heigth={this.state.heigth} width={this.state.width}/>
     </div>
     )
   };
