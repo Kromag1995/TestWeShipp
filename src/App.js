@@ -2,6 +2,9 @@ import React from 'react';
 
 import './App.css';
 import CellContainer from './components/CellContainer';
+import Menu from './components/Menu';
+
+
 
 function generateMatrix(width,heigth){
   return Array(heigth).fill().map(()=>{
@@ -15,17 +18,24 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      heigth: 60,
-      width: 30,
-      board: generateMatrix(30,60),
+      heigth: 5,
+      width: 5,
+      menuheigth:5,
+      menuwidth:5,
+      board: generateMatrix(5,5),
       generation:0,
       run:false,
+      time:300,
+      menutime:300,
     };
     this.startRun = this.startRun.bind(this)
     this.stopRun = this.stopRun.bind(this)
     this.restartRun = this.restartRun.bind(this)
     this.turn = this.turn.bind(this)
     this.killorRevive = this.killorRevive.bind(this)
+    this.changeSize = this.changeSize.bind(this)
+    this.handleChange = this.handleChange.bind(this)
+    this.changeTime = this.changeTime.bind(this)
   }
   killorRevive(i,j){
     const newBoard = this.state.board.map((arr)=> {return arr.slice()})
@@ -47,7 +57,7 @@ class App extends React.Component {
   restartRun(){
     // clean the board and reset the countdown
     if (this.state.run === true){
-      this.setState({run:false})
+      this.stopRun()
     }
     this.setState({
       board:generateMatrix(this.state.width,this.state.heigth),
@@ -68,7 +78,7 @@ class App extends React.Component {
         this.turn()
         this.game()
       }
-    },300)
+    },this.state.time)
   }
   turn(){
     const newBoard = this.state.board.map((arr)=> {return arr.slice()})
@@ -109,22 +119,60 @@ class App extends React.Component {
       return false
     }
   }
-
-
+  changeSize(){
+    if (this.state.run === true){
+      this.stopRun()
+    }
+    if ((this.state.menuwidth<2)||(this.state.menuwidth<2)){
+      return
+    }
+    this.setState({
+      width:this.state.menuwidth,
+      heigth:this.state.menuheigth,
+      board:generateMatrix(this.state.menuwidth,this.state.menuheigth)
+    })
+  }
+  changeTime(){
+    if (this.state.run === true){
+      this.stopRun()
+    }
+    if (this.state.menutime<1){
+      return
+    }
+    this.setState({
+      time:this.state.menutime
+    })
+  }
+  handleChange(e){
+    var value = parseInt(e.target.value)
+    this.setState({
+      [e.target.name]:value
+    })
+  }
   render() {
+    var inputSize = [
+      {field:"Ancho",name:"menuwidth", value:this.state.menuwidth, type:"number"},
+      {field:"Alto",name:"menuheigth", value:this.state.menuheigth, type:"number"},
+    ]
+    var inputTime = [
+      {field:"Tiempo de intervalos (ms)",name:"menutime", value:this.state.menutime, type:"number"},
+    ]
     return(
-    <div className="App">
-      <div className="Panel">
-        <button onClick={this.startRun}>Iniciar</button>
-        <button onClick={this.stopRun}>Detener</button>
-        <button onClick={this.restartRun}>Reiniciar</button>
-        <button onClick={this.turn}>Step</button>
-        <div>
-          Generación {this.state.generation}
+      <div className="App">
+        <div className="Panel">
+          <button onClick={this.startRun}>Iniciar</button>
+          <button onClick={this.stopRun}>Detener</button>
+          <button onClick={this.restartRun}>Reiniciar</button>
+          <button onClick={this.turn}>Step</button>
+          <div>
+            Generación {this.state.generation}
+          </div>
+          <Menu input={inputSize} handleChange={this.handleChange} changeState={this.changeSize} name="Tamaño"/>
+          <small>El ancho y el alto no pueden ser menor a 2</small>
+          <Menu input={inputTime} handleChange={this.handleChange} changeState={this.changeTime} name="Tiempo"/>
         </div>
+        <CellContainer board={this.state.board} killorRevive={this.killorRevive} heigth={this.state.heigth} width={this.state.width}/>
       </div>
-      <CellContainer board={this.state.board} killorRevive={this.killorRevive} heigth={this.state.heigth} width={this.state.width}/>
-    </div>
     )
   };
 }
