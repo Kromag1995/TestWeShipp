@@ -3,6 +3,8 @@ import React from 'react';
 import './App.css';
 import CellContainer from './components/CellContainer';
 import Menu from './components/Menu';
+import MenuConfig from './components/MenuConfig';
+
 
 
 
@@ -13,6 +15,27 @@ function generateMatrix(width,heigth){
     })
   })
 }
+
+function matrixToString(arr){
+  var str = ''
+  arr.forEach(row=>{
+    row.forEach(columnElement=>{
+      str += `${columnElement},`
+    })
+    str +=';'
+  })
+  return str
+}
+
+function stringToMatrix(str){
+  var matrix = str.split(';').slice(0,-1).map(line=>{
+    return line.split(',').slice(0,-1).map(element=>{
+      return element === "true"?true:false
+    })
+  })
+  return matrix
+}
+
 
 class App extends React.Component {
   constructor(props) {
@@ -27,6 +50,9 @@ class App extends React.Component {
       run:false,
       time:300,
       menutime:300,
+      nameconfig:"Ejemplo 1",
+      configlist:[],
+      loadconfig:"",
     };
     this.startRun = this.startRun.bind(this)
     this.stopRun = this.stopRun.bind(this)
@@ -36,6 +62,8 @@ class App extends React.Component {
     this.changeSize = this.changeSize.bind(this)
     this.handleChange = this.handleChange.bind(this)
     this.changeTime = this.changeTime.bind(this)
+    this.saveConfig = this.saveConfig.bind(this)
+    this.loadConfig = this.loadConfig.bind(this)
   }
   killorRevive(i,j){
     const newBoard = this.state.board.map((arr)=> {return arr.slice()})
@@ -70,6 +98,11 @@ class App extends React.Component {
       this.game()
     }
   }
+
+  componentDidMount(){
+    this.showConfigInMemory()
+  }
+
 
   game(){
     // main engine of the simulation
@@ -144,9 +177,39 @@ class App extends React.Component {
     })
   }
   handleChange(e){
-    var value = parseInt(e.target.value)
+    console.log(e.target.name)
+    console.log(e.target.value)
+    var value
+    if (e.target.type==="number"){
+      value = parseInt(e.target.value)
+    }
+    else{
+      value = e.target.value
+    }
     this.setState({
       [e.target.name]:value
+    })
+  }
+  saveConfig(){
+    localStorage.setItem(`BoardConfig${this.state.nameconfig}`,matrixToString(this.state.board))
+    this.showConfigInMemory()
+  }
+  showConfigInMemory(){
+    var myKeys = Object.keys(localStorage).filter((x) => { return x.slice(0,11)==="BoardConfig"}).map(x=>{return x.slice(11)})
+    this.setState({
+      configlist : myKeys.slice(),
+      loadconfig : myKeys[0]
+    })
+  }
+  loadConfig(){
+    console.log(localStorage)
+    console.log(`BoardConfig${this.state.loadconfig}`)
+    var newBoard = stringToMatrix(localStorage.getItem(`BoardConfig${this.state.loadconfig}`))
+    console.log(newBoard)
+    this.setState({
+      board: newBoard.map((arr)=> {return arr.slice()}),
+      heigth: newBoard.length,
+      width: newBoard[0].length
     })
   }
   render() {
@@ -157,6 +220,13 @@ class App extends React.Component {
     var inputTime = [
       {field:"Tiempo de intervalos (ms)",name:"menutime", value:this.state.menutime, type:"number"},
     ]
+    var inputSave = [
+      {field:"Nombre de la configuracion",name:"nameconfig", value:this.state.nameconfig, type:"text"},
+    ]
+    var loadpanel
+    if (this.state.loadconfig !== []){
+      loadpanel = <MenuConfig options={this.state.configlist} handleChange={this.handleChange} value={this.state.loadconfig} onClick={this.loadConfig}/>
+    }
     return(
       <div className="App">
         <div className="Panel">
@@ -167,10 +237,13 @@ class App extends React.Component {
           <div>
             Generación {this.state.generation}
           </div>
-          <Menu input={inputSize} handleChange={this.handleChange} changeState={this.changeSize} name="Tamaño"/>
-          <small>El ancho y el alto no pueden ser menor a 2</small>
-          <Menu input={inputTime} handleChange={this.handleChange} changeState={this.changeTime} name="Tiempo"/>
         </div>
+        <Menu input={inputSize} handleChange={this.handleChange} onClick={this.changeSize} name="Cambiar tamaño"/>
+        <small>El ancho y el alto no pueden ser menor a 2</small>
+        <Menu input={inputTime} handleChange={this.handleChange} onClick={this.changeTime} name="Cambiar tiempo"/>
+        <Menu input={inputSave} handleChange={this.handleChange} onClick={this.saveConfig} name="Guardar"/>
+        {loadpanel}
+
         <CellContainer board={this.state.board} killorRevive={this.killorRevive} heigth={this.state.heigth} width={this.state.width}/>
       </div>
     )
