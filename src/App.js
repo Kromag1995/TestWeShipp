@@ -177,8 +177,6 @@ class App extends React.Component {
     })
   }
   handleChange(e){
-    console.log(e.target.name)
-    console.log(e.target.value)
     var value
     if (e.target.type==="number"){
       value = parseInt(e.target.value)
@@ -202,10 +200,7 @@ class App extends React.Component {
     })
   }
   loadConfig(){
-    console.log(localStorage)
-    console.log(`BoardConfig${this.state.loadconfig}`)
     var newBoard = stringToMatrix(localStorage.getItem(`BoardConfig${this.state.loadconfig}`))
-    console.log(newBoard)
     this.setState({
       board: newBoard.map((arr)=> {return arr.slice()}),
       heigth: newBoard.length,
