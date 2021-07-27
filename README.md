@@ -9,3 +9,20 @@ Se puede cambiar el tamaño de la grilla  o el tiempo entre cada ejecucion hacie
 Se puede guardar la configuracion actual en la memoria haciendo click en "Guardar Configuracion".
 
 Se puede cargar una configuracion predeterminada o una que este en la memoria haciendo click en "Cargar Configuracion". 
+
+Actualmente se tiene un par de configuraciones basicas predeterminadas:
+
+### Flor
+Crea un tablero de 10x10 con una "flor" viva en el centro.
+
+### Diagonal
+Crea un tablero de 10x10 con la diagonal mas la segunda celula de la primera fila vivas.
+
+### Medio vertical
+Crea un tablero de 10x10 con una columna vertical viva
+
+### Medio y Diagonal
+Crea un tablero de 10x10 con una columna vertical y la diagonal viva
+
+### Vivos
+Crea un tablero de 10x10 con todas las celulas vivas
