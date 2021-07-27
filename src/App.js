@@ -8,12 +8,11 @@ import MenuConfig from './components/MenuConfig';
 
 
 
+
+
+
 function generateMatrix(width,heigth){
-  return Array(heigth).fill().map(()=>{
-    return Array(width).fill().map(()=>{
-      return false
-    })
-  })
+  return Array(width).fill(Array(heigth).fill(false)).slice().map((arr)=> {return arr.slice()})
 }
 
 function matrixToString(arr){
@@ -51,8 +50,10 @@ class App extends React.Component {
       time:300,
       menutime:300,
       nameconfig:"Ejemplo 1",
-      configlist:[],
-      loadconfig:"",
+      configfrommemorylist:[],
+      loadconfigfrommemory:"",
+      configfrompredlist:['Flor','Diagonal','Medio vertical','Medio y Diagonal','Todos Vivos'],
+      loadconfigfrompred:"Flor",
     };
     this.startRun = this.startRun.bind(this)
     this.stopRun = this.stopRun.bind(this)
@@ -63,10 +64,11 @@ class App extends React.Component {
     this.handleChange = this.handleChange.bind(this)
     this.changeTime = this.changeTime.bind(this)
     this.saveConfig = this.saveConfig.bind(this)
-    this.loadConfig = this.loadConfig.bind(this)
+    this.loadConfigFromMemory = this.loadConfigFromMemory.bind(this)
     this.showMenu = this.showMenu.bind(this)
-
+    this.loadConfigFromPred = this.loadConfigFromPred.bind(this)
   }
+
   killorRevive(i,j){
     const newBoard = this.state.board.map((arr)=> {return arr.slice()})
     newBoard[j][i] = !newBoard[j][i]
@@ -74,16 +76,97 @@ class App extends React.Component {
       board : newBoard.map((arr)=> {return arr.slice()})
     })
   }
+
+  diagPrinc(){
+    var newBoard = generateMatrix(this.state.width,this.state.heigth)
+    const min = Math.min(this.state.width,this.state.heigth)
+    for (var i=0;i<min;i++){
+      newBoard[i][i] = true
+    }
+    newBoard[0][1] = true
+    this.setState({
+      board : newBoard.map((arr)=> {return arr.slice()})
+    })
+  }
+
+  vertPrinc(){
+    var newBoard = generateMatrix(this.state.width,this.state.heigth)
+    const mid = Math.round(this.state.width/2)-1
+    for (var i=0;i<this.state.heigth;i++){
+      newBoard[i][mid] = true
+    }
+    this.setState({
+      board : newBoard.map((arr)=> {return arr.slice()})
+    })
+  }
+
+  vertAndDiag(){
+    var newBoard = generateMatrix(10,10)
+    for (var i=0;i<10;i++){
+      newBoard[i][i] = true
+    }
+    for (i=0;i<10;i++){
+      newBoard[i][5] = true
+    }
+    this.setState({
+      width : 10,
+      heigth : 10,
+      board : newBoard.map((arr)=> {return arr.slice()})
+    })
+  }
+
+  flower(){
+    var newBoard = generateMatrix(10,10)
+    newBoard[5][5] = true
+    newBoard[4][5] = true
+    newBoard[6][5] = true
+    newBoard[5][4] = true
+    newBoard[5][6] = true
+    console.log(newBoard)
+    this.setState({
+      width : 10,
+      heigth : 10,
+      board : newBoard.map((arr)=> {return arr.slice()})
+    })
+
+  }
+  alive(){
+    this.setState({board:Array(this.state.width).fill(Array(this.state.heigth).fill(true))})    
+  }
+
+  loadConfigFromPred(){
+    if (this.state.run === true){
+      this.stopRun()
+    }
+    switch(this.state.loadconfigfrompred){
+      case 'Flor':
+        console.log("Flor")
+        this.flower()
+        break
+      case 'Diagonal': this.diagPrinc()
+        break
+      case 'Medio vertical': this.vertPrinc()
+        break
+      case 'Medio y Diagonal': this.vertAndDiag()
+        break
+      case 'Todos Vivos': this.alive()
+        break
+      default:    
+    }
+  }
+
   startRun(){
     // start/resume simulation
     this.setState({
       run:true
     })
   }
+
   stopRun(){
     // stop simulation
     this.setState({run:false})
   }
+
   restartRun(){
     // clean the board and reset the countdown
     if (this.state.run === true){
@@ -105,7 +188,6 @@ class App extends React.Component {
     this.showConfigInMemory()
   }
 
-
   game(){
     // main engine of the simulation
     setTimeout(()=>{
@@ -115,6 +197,7 @@ class App extends React.Component {
       }
     },this.state.time)
   }
+
   turn(){
     const newBoard = this.state.board.map((arr)=> {return arr.slice()})
     var neighborhood =  Array(0)
@@ -144,6 +227,7 @@ class App extends React.Component {
       }
     })
   }
+
   check(neighborhood, alive){
     //checks if the cell should keep living, revive or die
     var count = neighborhood.filter(x=>x===true).length
@@ -154,6 +238,7 @@ class App extends React.Component {
       return false
     }
   }
+
   changeSize(){
     if (this.state.run === true){
       this.stopRun()
@@ -167,6 +252,7 @@ class App extends React.Component {
       board:generateMatrix(this.state.menuwidth,this.state.menuheigth)
     })
   }
+
   changeTime(){
     if (this.state.run === true){
       this.stopRun()
@@ -178,6 +264,7 @@ class App extends React.Component {
       time:this.state.menutime
     })
   }
+
   handleChange(e){
     var value
     if (e.target.type==="number"){
@@ -190,6 +277,7 @@ class App extends React.Component {
       [e.target.name]:value
     })
   }
+
   saveConfig(){
     localStorage.setItem(`BoardConfig${this.state.nameconfig}`,matrixToString(this.state.board))
     this.showConfigInMemory()
@@ -197,22 +285,24 @@ class App extends React.Component {
   showConfigInMemory(){
     var myKeys = Object.keys(localStorage).filter((x) => { return x.slice(0,11)==="BoardConfig"}).map(x=>{return x.slice(11)})
     this.setState({
-      configlist : myKeys.slice(),
-      loadconfig : myKeys[0]
+      configfrommemorylist : myKeys.slice(),
+      loadconfigfrommemory : myKeys[0]
     })
   }
-  loadConfig(){
-    var newBoard = stringToMatrix(localStorage.getItem(`BoardConfig${this.state.loadconfig}`))
+
+  loadConfigFromMemory(){
+    var newBoard = stringToMatrix(localStorage.getItem(`BoardConfig${this.state.loadconfigfrommemory}`))
     this.setState({
       board: newBoard.map((arr)=> {return arr.slice()}),
       heigth: newBoard.length,
       width: newBoard[0].length
     })
   }
+
   showMenu(e){
-    console.log(e.target.name)
     this.setState({changeMode:e.target.name})
   }
+
   render() {
     var inputSize = [
       {field:"Ancho",name:"menuwidth", value:this.state.menuwidth, type:"number"},
@@ -227,7 +317,7 @@ class App extends React.Component {
     var changeWindow
     switch(this.state.changeMode){
         case "size":
-          changeWindow = <Menu input={inputSize} handleChange={this.handleChange} onClick={this.changeSize} name="Cambiar tamaño"/>
+          changeWindow = <Menu input={inputSize} handleChange={this.handleChange} onClick={this.changeSize} name="Cambiar tamaño" message={"El tamaño minimo para el alto y el ancho es 2"}/>
           break;
         case "time":
           changeWindow = <Menu input={inputTime} handleChange={this.handleChange} onClick={this.changeTime} name="Cambiar tiempo"/>
@@ -236,7 +326,10 @@ class App extends React.Component {
           changeWindow = <Menu input={inputSave} handleChange={this.handleChange} onClick={this.saveConfig} name="Guardar"/>
           break;
         case "load":
-          changeWindow = <MenuConfig options={this.state.configlist} handleChange={this.handleChange} value={this.state.loadconfig} onClick={this.loadConfig}/>
+          changeWindow = <>
+                        <MenuConfig options={this.state.configfrommemorylist} name ="loadconfigfrommemory" handleChange={this.handleChange} value={this.state.loadconfigfrommemory} onClick={this.loadConfigFromMemory}/>
+                        <MenuConfig options={this.state.configfrompredlist} name ="loadconfigfrompred" handleChange={this.handleChange} value={this.state.loadconfigfrompred} onClick={this.loadConfigFromPred}/>
+                        </>
           break;
         default:
     }
@@ -251,7 +344,7 @@ class App extends React.Component {
           <button onClick={this.showMenu} name="time">Cambiar tiempo</button>
           <button onClick={this.showMenu} name="save">Guardar configuracion</button>
           <button onClick={this.showMenu} name="load">Cargar configuracion</button>
-          <div>
+          <div className="generation">
             <strong>
               Generación {this.state.generation}
             </strong>

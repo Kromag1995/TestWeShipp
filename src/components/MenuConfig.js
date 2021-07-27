@@ -7,7 +7,8 @@ class MenuConfig extends React.Component {
     })
     return(
       <div className="menu">
-        <select name="loadconfig" value={this.props.value} onChange={this.props.handleChange}>
+        <p>Cargar una configuracion de la memoria local</p>
+        <select name={this.props.name} value={this.props.value} onChange={this.props.handleChange}>
             {options}
         </select>
         <button onClick={this.props.onClick}>Cargar</button>

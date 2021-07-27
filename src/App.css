@@ -53,3 +53,7 @@
 .false {
   background-color:white;
 }
+
+.menu select{
+  height: 30px;
+}

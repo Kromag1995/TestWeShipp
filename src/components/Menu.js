@@ -11,6 +11,7 @@ class Menu extends React.Component {
     return(
         <div className="menu">
             {fields}
+            <p>{this.props.message}</p>
             <button onClick={this.props.onClick}>{this.props.name}</button>
         </div>
     )
