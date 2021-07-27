@@ -64,6 +64,8 @@ class App extends React.Component {
     this.changeTime = this.changeTime.bind(this)
     this.saveConfig = this.saveConfig.bind(this)
     this.loadConfig = this.loadConfig.bind(this)
+    this.showMenu = this.showMenu.bind(this)
+
   }
   killorRevive(i,j){
     const newBoard = this.state.board.map((arr)=> {return arr.slice()})
@@ -207,6 +209,10 @@ class App extends React.Component {
       width: newBoard[0].length
     })
   }
+  showMenu(e){
+    console.log(e.target.name)
+    this.setState({changeMode:e.target.name})
+  }
   render() {
     var inputSize = [
       {field:"Ancho",name:"menuwidth", value:this.state.menuwidth, type:"number"},
@@ -218,27 +224,40 @@ class App extends React.Component {
     var inputSave = [
       {field:"Nombre de la configuracion",name:"nameconfig", value:this.state.nameconfig, type:"text"},
     ]
-    var loadpanel
-    if (this.state.loadconfig !== []){
-      loadpanel = <MenuConfig options={this.state.configlist} handleChange={this.handleChange} value={this.state.loadconfig} onClick={this.loadConfig}/>
+    var changeWindow
+    switch(this.state.changeMode){
+        case "size":
+          changeWindow = <Menu input={inputSize} handleChange={this.handleChange} onClick={this.changeSize} name="Cambiar tamaño"/>
+          break;
+        case "time":
+          changeWindow = <Menu input={inputTime} handleChange={this.handleChange} onClick={this.changeTime} name="Cambiar tiempo"/>
+          break;
+        case "save":
+          changeWindow = <Menu input={inputSave} handleChange={this.handleChange} onClick={this.saveConfig} name="Guardar"/>
+          break;
+        case "load":
+          changeWindow = <MenuConfig options={this.state.configlist} handleChange={this.handleChange} value={this.state.loadconfig} onClick={this.loadConfig}/>
+          break;
+        default:
     }
     return(
       <div className="App">
-        <div className="Panel">
+        <div className="panel">
           <button onClick={this.startRun}>Iniciar</button>
           <button onClick={this.stopRun}>Detener</button>
           <button onClick={this.restartRun}>Reiniciar</button>
           <button onClick={this.turn}>Step</button>
+          <button onClick={this.showMenu} name="size">Cambiar tamaño</button>
+          <button onClick={this.showMenu} name="time">Cambiar tiempo</button>
+          <button onClick={this.showMenu} name="save">Guardar configuracion</button>
+          <button onClick={this.showMenu} name="load">Cargar configuracion</button>
           <div>
-            Generación {this.state.generation}
+            <strong>
+              Generación {this.state.generation}
+            </strong>
           </div>
         </div>
-        <Menu input={inputSize} handleChange={this.handleChange} onClick={this.changeSize} name="Cambiar tamaño"/>
-        <small>El ancho y el alto no pueden ser menor a 2</small>
-        <Menu input={inputTime} handleChange={this.handleChange} onClick={this.changeTime} name="Cambiar tiempo"/>
-        <Menu input={inputSave} handleChange={this.handleChange} onClick={this.saveConfig} name="Guardar"/>
-        {loadpanel}
-
+        {changeWindow}
         <CellContainer board={this.state.board} killorRevive={this.killorRevive} heigth={this.state.heigth} width={this.state.width}/>
       </div>
     )

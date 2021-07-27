@@ -7,7 +7,7 @@ class CellContainer extends React.Component {
   renderBoard(){
     var board = Array(this.props.heigth).fill().map((u,j) => { return this.renderRow(j) })
     return (
-      <div className="Board">
+      <div className="cellboard">
         {board}
       </div>
     )

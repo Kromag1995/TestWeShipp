@@ -9,7 +9,7 @@ class Menu extends React.Component {
         </div>)
     });
     return(
-        <div>
+        <div className="menu">
             {fields}
             <button onClick={this.props.onClick}>{this.props.name}</button>
         </div>

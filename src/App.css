@@ -1,18 +1,55 @@
 .App {
-  background-color: red;
+  background-color: rgb(255, 255, 255);
 }
 
+.panel button{
+  color: rgb(232, 230, 227);
+  background-color: rgb(47 157 200 / 87%);
+  border-color: rgb(47 157 200 / 87%);
+  padding: 5px;
+  margin: 5px;
+}
+
+.menu button{
+  color: rgb(232, 230, 227);
+  background-color: rgb(47 157 200 / 87%);
+  border-color: rgb(47 157 200 / 87%);
+  padding: 5px;
+  margin: 5px;
+}
+
+.panel div{
+  display: inline-block;
+}
+
+.container{
+  text-align: center;
+  overflow: auto;
+}
+
+.cellboard{
+  margin-left: auto;
+  margin-right: auto;
+  overflow-x: auto;
+  display: inline-block;
+}
+
+.row{
+  display: flex;
+}
 .Cell {
+  border-width: 1px;
+  margin: 2px;
   height: 25px;
   width: 25px;
   border-radius: 50%;
   display: inline-block;
 }
 
-.false {
+.true {
   background-color: rgb(158, 0, 0);
 }
 
-.true {
+.false {
   background-color:white;
 }

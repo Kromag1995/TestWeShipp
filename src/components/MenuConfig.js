@@ -6,7 +6,7 @@ class MenuConfig extends React.Component {
       return <option value={element} key={index}>{element}</option>
     })
     return(
-      <div>
+      <div className="menu">
         <select name="loadconfig" value={this.props.value} onChange={this.props.handleChange}>
             {options}
         </select>
