@@ -13,7 +13,7 @@ import MenuConfig from './components/MenuConfig';
 
 function generateMatrix(width,heigth){
   //return a new multidimensional array of dimension heigth*width with false in its elements 
-  return Array(width).fill(Array(heigth).fill(false)).slice().map((arr)=> {return arr.slice()})
+  return Array(heigth).fill(Array(width).fill(false)).slice().map((arr)=> {return arr.slice()})
 }
 
 function matrixToString(arr){
@@ -43,11 +43,11 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      heigth: 5,
-      width: 5,
-      menuheigth:5,
-      menuwidth:5,
-      board: generateMatrix(5,5),
+      heigth: 50,
+      width: 30,
+      menuheigth:50,
+      menuwidth:30,
+      board: generateMatrix(30,50),
       generation:0,
       run:false,
       time:300,
@@ -96,9 +96,8 @@ class App extends React.Component {
 
   //Configuraciones Predeterminadas
   diagPrinc(){
-    var newBoard = generateMatrix(this.state.width,this.state.heigth)
-    const min = Math.min(this.state.width,this.state.heigth)
-    for (var i=0;i<min;i++){
+    var newBoard = generateMatrix(10,10)
+    for (var i=0;i<10;i++){
       newBoard[i][i] = true
     }
     newBoard[0][1] = true
@@ -108,10 +107,9 @@ class App extends React.Component {
   }
 
   vertPrinc(){
-    var newBoard = generateMatrix(this.state.width,this.state.heigth)
-    const mid = Math.round(this.state.width/2)-1
-    for (var i=0;i<this.state.heigth;i++){
-      newBoard[i][mid] = true
+    var newBoard = generateMatrix(10,10)
+    for (var i=0;i<10;i++){
+      newBoard[i][4] = true
     }
     this.setState({
       board : newBoard.map((arr)=> {return arr.slice()})
@@ -124,7 +122,7 @@ class App extends React.Component {
       newBoard[i][i] = true
     }
     for (i=0;i<10;i++){
-      newBoard[i][5] = true
+      newBoard[i][4] = true
     }
     this.setState({
       width : 10,
@@ -140,7 +138,6 @@ class App extends React.Component {
     newBoard[6][5] = true
     newBoard[5][4] = true
     newBoard[5][6] = true
-    console.log(newBoard)
     this.setState({
       width : 10,
       heigth : 10,
@@ -160,7 +157,6 @@ class App extends React.Component {
     }
     switch(this.state.loadconfigfrompred){
       case 'Flor':
-        console.log("Flor")
         this.flower()
         break
       case 'Diagonal': this.diagPrinc()

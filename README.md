@@ -1,6 +1,7 @@
 # Juego de la Vida
 
-Es una app que simula el juego de la vida de Conway hecha en react. Las celulas originalmente se encuentran muertas. Haciendo click sobre una celula la misma cobra vida. Al hacer click comienza a iterar la simulacion, cada 300 ms mata o revive una celula y aumenta el contador de generaciones en 1. Al hacer click en detener la simulacio se pone en pausa y puede ser reanudada al hacer click en iniciar. Reiniciar para la simulacion, mata todas las ceculas vivas y resetea el contador de Generacion. 
+Es una app que simula el juego de la vida de Conway hecha en react.
+Las celulas blancas se encuentran muertas mientras que las rojas se encuentan vivas. Originalmente todas las celulas se encuentran muertas. Haciendo click sobre una celula la misma cobra vida. Al hacer click comienza a iterar la simulacion, cada 300 ms mata o revive una celula y aumenta el contador de generaciones en 1. Al hacer click en detener la simulacio se pone en pausa y puede ser reanudada al hacer click en iniciar. Reiniciar para la simulacion, mata todas las ceculas vivas y resetea el contador de Generacion. 
 
 Haciendo click en el boton step se realiza un turno de la simulacion.
 
