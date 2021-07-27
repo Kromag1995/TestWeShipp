@@ -12,10 +12,12 @@ import MenuConfig from './components/MenuConfig';
 
 
 function generateMatrix(width,heigth){
+  //return a new multidimensional array of dimension heigth*width with false in its elements 
   return Array(width).fill(Array(heigth).fill(false)).slice().map((arr)=> {return arr.slice()})
 }
 
 function matrixToString(arr){
+  // transform the multidimensional array into a string representation
   var str = ''
   arr.forEach(row=>{
     row.forEach(columnElement=>{
@@ -27,12 +29,13 @@ function matrixToString(arr){
 }
 
 function stringToMatrix(str){
+  // transform a str into a multidimensional array
   var matrix = str.split(';').slice(0,-1).map(line=>{
     return line.split(',').slice(0,-1).map(element=>{
       return element === "true"?true:false
     })
   })
-  return matrix
+  return matrix.map((arr)=> {return arr.slice()})
 }
 
 
@@ -69,7 +72,20 @@ class App extends React.Component {
     this.loadConfigFromPred = this.loadConfigFromPred.bind(this)
   }
 
+
+  componentDidUpdate(prevProps,prevState) {
+    if ((this.state.run !== prevState.run)&&(this.state.run)) {
+      this.game()
+    }
+  }
+
+  componentDidMount(){
+    this.showConfigInMemory()
+  }
+
+
   killorRevive(i,j){
+    //Kill a cell if its alive, revive it otherwise
     const newBoard = this.state.board.map((arr)=> {return arr.slice()})
     newBoard[j][i] = !newBoard[j][i]
     this.setState({
@@ -77,6 +93,8 @@ class App extends React.Component {
     })
   }
 
+
+  //Configuraciones Predeterminadas
   diagPrinc(){
     var newBoard = generateMatrix(this.state.width,this.state.heigth)
     const min = Math.min(this.state.width,this.state.heigth)
@@ -130,11 +148,13 @@ class App extends React.Component {
     })
 
   }
+
   alive(){
     this.setState({board:Array(this.state.width).fill(Array(this.state.heigth).fill(true))})    
   }
 
   loadConfigFromPred(){
+    //Load a predeterminated configuration of the board
     if (this.state.run === true){
       this.stopRun()
     }
@@ -155,6 +175,8 @@ class App extends React.Component {
     }
   }
 
+
+  //Simulation
   startRun(){
     // start/resume simulation
     this.setState({
@@ -168,7 +190,7 @@ class App extends React.Component {
   }
 
   restartRun(){
-    // clean the board and reset the countdown
+    // stop the simulation, clean the board and reset the countdown
     if (this.state.run === true){
       this.stopRun()
     }
@@ -178,18 +200,8 @@ class App extends React.Component {
     })
   }
 
-  componentDidUpdate(prevProps,prevState) {
-    if ((this.state.run !== prevState.run)&&(this.state.run)) {
-      this.game()
-    }
-  }
-
-  componentDidMount(){
-    this.showConfigInMemory()
-  }
-
   game(){
-    // main engine of the simulation
+    // main engine of the simulation, if run is true it keeps it calls turn and itself
     setTimeout(()=>{
       if (this.state.run){
         this.turn()
@@ -199,14 +211,15 @@ class App extends React.Component {
   }
 
   turn(){
+    // turn in the simulation, for every cell in the board check its neighborhood and call check 
     const newBoard = this.state.board.map((arr)=> {return arr.slice()})
     var neighborhood =  Array(0)
     var alive
     this.state.board.forEach((elementJ, j) => {
       elementJ.forEach((elementI,i)=>{
-        //Condiciones de contorno periodicas
-        let k = j === 0? this.state.heigth-1:j-1 // si j es la primera fila entonces elijo la ultima fila, sino la fila anterior 
-        let l = j === this.state.heigth-1? 0:j+1 // si j es la ultima fila entonces elijo la primera fila, sino la siguiente
+        //Periodic conditions
+        let k = j === 0? this.state.heigth-1:j-1
+        let l = j === this.state.heigth-1? 0:j+1 
         if (i===0){
           neighborhood = [...this.state.board[k].slice(0,2),this.state.board[k][this.state.width-1],...this.state.board[l].slice(0,2),this.state.board[l][this.state.width-1], elementJ[this.state.width-1], elementJ[1]]
         }
@@ -239,7 +252,10 @@ class App extends React.Component {
     }
   }
 
+
+  //change parameters
   changeSize(){
+    //Stop the simulation, clean the board and change its size
     if (this.state.run === true){
       this.stopRun()
     }
@@ -254,6 +270,7 @@ class App extends React.Component {
   }
 
   changeTime(){
+    // Stop the simulation, and change the time between simulation
     if (this.state.run === true){
       this.stopRun()
     }
@@ -266,6 +283,7 @@ class App extends React.Component {
   }
 
   handleChange(e){
+    // Handle the change of the inputs 
     var value
     if (e.target.type==="number"){
       value = parseInt(e.target.value)
@@ -278,11 +296,14 @@ class App extends React.Component {
     })
   }
 
+
   saveConfig(){
+    // Save the current configuration on localStorage
     localStorage.setItem(`BoardConfig${this.state.nameconfig}`,matrixToString(this.state.board))
     this.showConfigInMemory()
   }
   showConfigInMemory(){
+    // Load the names of the currents configurations in localStorage
     var myKeys = Object.keys(localStorage).filter((x) => { return x.slice(0,11)==="BoardConfig"}).map(x=>{return x.slice(11)})
     this.setState({
       configfrommemorylist : myKeys.slice(),
@@ -291,6 +312,7 @@ class App extends React.Component {
   }
 
   loadConfigFromMemory(){
+    //load the configuration from localStorage
     var newBoard = stringToMatrix(localStorage.getItem(`BoardConfig${this.state.loadconfigfrommemory}`))
     this.setState({
       board: newBoard.map((arr)=> {return arr.slice()}),
@@ -299,7 +321,9 @@ class App extends React.Component {
     })
   }
 
+
   showMenu(e){
+    //Show the selected menu
     this.setState({changeMode:e.target.name})
   }
 
