@@ -27,3 +27,5 @@ Crea un tablero de 10x10 con una columna vertical y la diagonal viva
 
 ### Vivos
 Crea un tablero de 10x10 con todas las celulas vivas
+
+El proyecto esta disponible para interactuar en https://juego-de-la-vida.herokuapp.com/.
